@@ -63,3 +63,6 @@ dist/
 flutter/android/.gradle/
 flutter/build/
 codeuchain_components/target/
+
+# local flutter plugins
+flutter/local_plugins/
