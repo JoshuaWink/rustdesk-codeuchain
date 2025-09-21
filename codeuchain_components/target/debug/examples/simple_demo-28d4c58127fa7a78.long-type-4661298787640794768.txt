@@ -1,1 +1,0 @@
-Result<codeuchain::Context, Box<dyn StdError + Send + Sync>>
