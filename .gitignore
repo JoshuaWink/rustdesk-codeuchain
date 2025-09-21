@@ -66,3 +66,6 @@ codeuchain_components/target/
 
 # local flutter plugins
 flutter/local_plugins/
+
+# distribution artifacts (additional)
+dist/*.apk
