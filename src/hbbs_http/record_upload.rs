@@ -28,8 +28,8 @@ pub fn run(rx: Receiver<RecordState>) {
     let mut uploader = RecordUploader {
         client: create_http_client(),
         api_server: crate::get_api_server(
-            Config::get_option("api-server"),
-            Config::get_option("custom-rendezvous-server"),
+            Config::get_option("api-server").unwrap_or_default(),
+            Config::get_option("custom-rendezvous-server").unwrap_or_default(),
         ),
         filepath: Default::default(),
         filename: Default::default(),

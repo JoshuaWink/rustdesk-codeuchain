@@ -48,6 +48,13 @@ mod lang;
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 mod port_forward;
 
+/// CodeUChain-based modular components
+#[path = "../codeuchain_components/mod.rs"]
+pub mod codeuchain_components;
+
+/// CodeUChain session wrapper for Interface trait implementation
+mod session_wrapper;
+
 #[cfg(all(feature = "flutter", feature = "plugin_framework"))]
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub mod plugin;

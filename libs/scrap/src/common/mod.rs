@@ -1,7 +1,7 @@
 pub use self::vpxcodec::*;
 use hbb_common::{
     bail, log,
-    message_proto::{video_frame, Chroma, VideoFrame},
+    message_proto::message::{video_frame, Chroma, VideoFrame},
     ResultType,
 };
 use std::{ffi::c_void, slice};

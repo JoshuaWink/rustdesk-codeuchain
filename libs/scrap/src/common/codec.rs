@@ -30,11 +30,11 @@ use hbb_common::{
     bail,
     config::{Config, PeerConfig},
     lazy_static, log,
-    message_proto::{
+    message_proto::message::{
         supported_decoding::PreferCodec, video_frame, Chroma, CodecAbility, EncodedVideoFrames,
         SupportedDecoding, SupportedEncoding, VideoFrame,
     },
-    sysinfo::System,
+    sysinfo::{LoadAverageExt, System},
     ResultType,
 };
 
@@ -266,10 +266,10 @@ impl Encoder {
             .into_iter()
             .find(|(_, count)| *count == max_count)
             .unwrap_or((PreferCodec::Auto.into(), 0));
-        let preference = most_frequent.enum_value_or(PreferCodec::Auto);
+        let preference = most_frequent;
 
         // auto: h265 > h264 > av1/vp9/vp8
-        let av1_test = Config::get_option(hbb_common::config::keys::OPTION_AV1_TEST) != "N";
+        let av1_test = Config::get_option(hbb_common::config::keys::OPTION_AV1_TEST) != Some("N".to_string());
         let mut auto_codec = if av1_useable && av1_test {
             CodecFormat::AV1
         } else {
@@ -290,25 +290,25 @@ impl Encoder {
             }
         }
 
-        *format = match preference {
-            PreferCodec::VP8 => CodecFormat::VP8,
-            PreferCodec::VP9 => CodecFormat::VP9,
-            PreferCodec::AV1 => CodecFormat::AV1,
-            PreferCodec::H264 => {
+        *format = match preference.value() {
+            0 => CodecFormat::VP8,  // PreferCodec::VP8
+            1 => CodecFormat::VP9,  // PreferCodec::VP9
+            2 => CodecFormat::AV1,  // PreferCodec::AV1
+            3 => {  // PreferCodec::H264
                 if h264vram_encoding || h264hw_encoding.is_some() {
                     CodecFormat::H264
                 } else {
                     auto_codec
                 }
             }
-            PreferCodec::H265 => {
+            4 => {  // PreferCodec::H265
                 if h265vram_encoding || h265hw_encoding.is_some() {
                     CodecFormat::H265
                 } else {
                     auto_codec
                 }
             }
-            PreferCodec::Auto => auto_codec,
+            _ => auto_codec,  // PreferCodec::Auto or unknown
         };
         if decodings.len() > 0 {
             log::info!(
@@ -408,9 +408,9 @@ impl Encoder {
         let i444_useable = match config {
             EncoderCfg::VPX(vpx) => match vpx.codec {
                 VpxVideoCodecId::VP8 => false,
-                VpxVideoCodecId::VP9 => decodings.iter().all(|d| d.1.i444.vp9),
+                VpxVideoCodecId::VP9 => decodings.iter().all(|d| d.1.i444.as_ref().map(|c| c.vp9).unwrap_or(false)),
             },
-            EncoderCfg::AOM(_) => decodings.iter().all(|d| d.1.i444.av1),
+            EncoderCfg::AOM(_) => decodings.iter().all(|d| d.1.i444.as_ref().map(|c| c.av1).unwrap_or(false)),
             #[cfg(feature = "hwcodec")]
             EncoderCfg::HWRAM(_) => false,
             #[cfg(feature = "vram")]
@@ -821,7 +821,7 @@ impl Decoder {
         if id.is_empty() {
             return (PreferCodec::Auto, Chroma::I420);
         }
-        let options = PeerConfig::load(id).options;
+        let options = PeerConfig::load(id).map(|c| c.options).unwrap_or_default();
         let codec = options
             .get("codec-preference")
             .map_or("".to_owned(), |c| c.to_owned());
@@ -992,9 +992,13 @@ pub fn codec_thread_num(limit: usize) -> usize {
     {
         s.refresh_cpu_usage();
         // https://man7.org/linux/man-pages/man3/getloadavg.3.html
-        let avg = s.load_average();
-        info = format!("cpu loadavg: {}", avg.one);
-        res = (((max as f64) - avg.one) * 0.5).round() as usize;
+        if let Ok(avg) = s.load_average() {
+            info = format!("cpu loadavg: {}", avg.0);
+            res = (((max as f64) - avg.0) * 0.5).round() as usize;
+        } else {
+            info = "cpu loadavg: unavailable".to_string();
+            res = max / 4; // fallback
+        }
     }
     res = std::cmp::min(res, max / 2);
     res = std::cmp::min(res, memory as usize / 2);
@@ -1042,7 +1046,7 @@ pub fn test_av1() {
     use hbb_common::rand::Rng;
     use std::{sync::Once, time::Duration};
 
-    if disable_av1() || !Config::get_option(OPTION_AV1_TEST).is_empty() {
+    if disable_av1() || Config::get_option(OPTION_AV1_TEST).as_ref().map(|s| !s.is_empty()).unwrap_or(false) {
         log::info!("skip test av1");
         return;
     }
@@ -1148,10 +1152,7 @@ pub fn test_av1() {
         };
         std::thread::spawn(move || {
             let v = f();
-            Config::set_option(
-                OPTION_AV1_TEST.to_string(),
-                if v { "Y" } else { "N" }.to_string(),
-            );
+            Config::set_option(OPTION_AV1_TEST, if v { "Y".to_string() } else { "N".to_string() });
         });
     });
 }

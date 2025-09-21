@@ -5,7 +5,7 @@
 
 use hbb_common::anyhow::{anyhow, Context};
 use hbb_common::log;
-use hbb_common::message_proto::{Chroma, EncodedVideoFrame, EncodedVideoFrames, VideoFrame};
+use hbb_common::message_proto::message::{Chroma, EncodedVideoFrame, EncodedVideoFrames, VideoFrame};
 use hbb_common::ResultType;
 
 use crate::codec::{base_bitrate, codec_thread_num, EncoderApi};
@@ -304,7 +304,7 @@ impl VpxEncoder {
     #[inline]
     fn create_frame(frame: &EncodeFrame) -> EncodedVideoFrame {
         EncodedVideoFrame {
-            data: Bytes::from(frame.data.to_vec()),
+            data: frame.data.to_vec(),
             key: frame.key,
             pts: frame.pts,
             ..Default::default()

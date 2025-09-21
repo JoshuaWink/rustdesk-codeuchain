@@ -3,7 +3,7 @@ use crate::CodecFormat;
 use hbb_common::anyhow::anyhow;
 use hbb_common::{
     bail, chrono, log,
-    message_proto::{message, video_frame, EncodedVideoFrame, Message},
+    message_proto::message::{video_frame, message::Union, EncodedVideoFrame, Message},
     ResultType,
 };
 #[cfg(feature = "hwcodec")]
@@ -171,7 +171,7 @@ impl Recorder {
     }
 
     pub fn write_message(&mut self, msg: &Message, w: usize, h: usize) {
-        if let Some(message::Union::VideoFrame(vf)) = &msg.union {
+        if let Some(Union::VideoFrame(vf)) = &msg.union {
             if let Some(frame) = &vf.union {
                 self.write_frame(frame, w, h).ok();
             }

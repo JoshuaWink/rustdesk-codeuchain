@@ -38,9 +38,9 @@ import kotlin.concurrent.thread
 class MainActivity : FlutterActivity() {
     companion object {
         var flutterMethodChannel: MethodChannel? = null
-        private var _rdClipboardManager: RdClipboardManager? = null
-        val rdClipboardManager: RdClipboardManager?
-            get() = _rdClipboardManager;
+        // private var _rdClipboardManager: RdClipboardManager? = null
+        // val rdClipboardManager: RdClipboardManager?
+        //     get() = _rdClipboardManager;
     }
 
     private val channelTag = "mChannel"
@@ -92,10 +92,10 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (_rdClipboardManager == null) {
-            _rdClipboardManager = RdClipboardManager(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            FFI.setClipboardManager(_rdClipboardManager!!)
-        }
+        // if (_rdClipboardManager == null) {
+        //     _rdClipboardManager = RdClipboardManager(getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+        //     FFI.setClipboardManager(_rdClipboardManager!!)
+        // }
     }
 
     override fun onDestroy() {
@@ -221,7 +221,7 @@ class MainActivity : FlutterActivity() {
 
                 }
                 "try_sync_clipboard" -> {
-                    rdClipboardManager?.syncClipboard(true)
+                    // rdClipboardManager?.syncClipboard(true)
                     result.success(true)
                 }
                 GET_START_ON_BOOT_OPT -> {

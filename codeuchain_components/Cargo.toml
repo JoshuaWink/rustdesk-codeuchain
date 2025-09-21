@@ -1,0 +1,28 @@
+[package]
+name = "codeuchain-rustdesk"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "codeuchain_rustdesk"
+path = "mod.rs"
+
+[dependencies]
+codeuchain = "1.0.1"
+async-trait = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+rand = "0.8"
+protobuf = "3.2"
+bytes = "1.4"
+
+# Mock hbb_common types for now - in real implementation, would use actual hbb_common
+[dependencies.hbb_common]
+version = "0.1.0"
+path = "../libs/hbb_common"
+optional = true
+
+[features]
+default = []
+full = ["hbb_common"]

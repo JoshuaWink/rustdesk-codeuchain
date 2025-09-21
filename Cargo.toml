@@ -20,6 +20,10 @@ path = "src/naming.rs"
 name = "service"
 path = "src/service.rs"
 
+[[bin]]
+name = "codeuchain_example"
+path = "codeuchain_components/examples/integration_example.rs"
+
 [features]
 inline = []
 cli = []
@@ -41,11 +45,14 @@ unix-file-copy-paste = [
     "clipboard/unix-file-copy-paste",
 ]
 screencapturekit = ["cpal/screencapturekit"]
+codeuchain_integration = ["dep:codeuchain-rustdesk"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 async-trait = "0.1"
+codeuchain = "1.0.1"
+codeuchain-rustdesk = { path = "codeuchain_components", optional = true }
 scrap = { path = "libs/scrap", features = ["wayland"] }
 hbb_common = { path = "libs/hbb_common" }
 serde_derive = "1.0"
@@ -198,7 +205,7 @@ jni = "0.21"
 android-wakelock = { git = "https://github.com/rustdesk-org/android-wakelock" }
 
 [workspace]
-members = ["libs/scrap", "libs/hbb_common", "libs/enigo", "libs/clipboard", "libs/virtual_display", "libs/virtual_display/dylib", "libs/portable", "libs/remote_printer"]
+members = ["libs/scrap", "libs/hbb_common", "libs/enigo", "libs/clipboard", "libs/virtual_display", "libs/virtual_display/dylib", "libs/portable", "libs/remote_printer", "codeuchain_components"]
 exclude = ["vdi/host", "examples/custom_plugin"]
 
 [package.metadata.winres]

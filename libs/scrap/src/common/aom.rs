@@ -14,7 +14,7 @@ use hbb_common::{
     anyhow::{anyhow, Context},
     bytes::Bytes,
     log,
-    message_proto::{Chroma, EncodedVideoFrame, EncodedVideoFrames, VideoFrame},
+    message_proto::message::{Chroma, EncodedVideoFrame, EncodedVideoFrames, VideoFrame},
     ResultType,
 };
 use std::{ptr, slice};
@@ -337,7 +337,7 @@ impl AomEncoder {
     #[inline]
     fn create_frame(frame: &EncodeFrame) -> EncodedVideoFrame {
         EncodedVideoFrame {
-            data: Bytes::from(frame.data.to_vec()),
+            data: frame.data.to_vec(),
             key: frame.key,
             pts: frame.pts,
             ..Default::default()
