@@ -10,6 +10,12 @@ use hbb_common::{config, log};
 #[cfg(windows)]
 use tauri_winrt_notification::{Duration, Sound, Toast};
 
+// CodeUChain imports for core main orchestration
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+use codeuchain_components::core_main_chains::ApplicationOrchestratorLink;
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+use codeuchain::Context;
+
 #[macro_export]
 macro_rules! my_println{
     ($($arg:tt)*) => {
@@ -29,13 +35,51 @@ macro_rules! my_println{
 /// If it returns [`Some`], then the process will continue, and flutter gui will be started.
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn core_main() -> Option<Vec<String>> {
+    // CodeUChain-based processing (maintains API compatibility)
+    let orchestrator = ApplicationOrchestratorLink::new();
+    let initial_ctx = Context::new(std::collections::HashMap::new());
+
+    match futures::executor::block_on(orchestrator.call(initial_ctx)) {
+        Ok(result_ctx) => {
+            // Extract flutter args from CodeUChain result
+            if let Some(flutter_args) = result_ctx.get("application_result") {
+                if let Some(args_array) = flutter_args.as_array() {
+                    let flutter_strings: Vec<String> = args_array.iter()
+                        .filter_map(|v| v.as_str())
+                        .map(|s| s.to_string())
+                        .collect();
+
+                    // Check if application should terminate
+                    let should_terminate = result_ctx.get("should_terminate")
+                        .unwrap_or(&serde_json::Value::Bool(false))
+                        .as_bool()
+                        .unwrap_or(false);
+
+                    if should_terminate {
+                        return Some(flutter_strings);
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            log::error!("CodeUChain core_main processing failed: {:?}", e);
+            // Fall back to legacy processing
+        }
+    }
+
+    // Legacy processing (preserved for API compatibility and fallback)
+    core_main_legacy()
+}
+
+/// Legacy core_main implementation (preserved for compatibility)
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
+fn core_main_legacy() -> Option<Vec<String>> {
     crate::load_custom_client();
     #[cfg(windows)]
     if !crate::platform::windows::bootstrap() {
         // return None to terminate the process
         return None;
     }
-    let mut args = Vec::new();
     let mut flutter_args = Vec::new();
     let mut i = 0;
     let mut _is_elevate = false;

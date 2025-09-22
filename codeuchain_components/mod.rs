@@ -15,6 +15,9 @@ pub mod server_links; // Server system processing links
 pub mod server_chains; // Server system processing chains
 pub mod ui_links; // UI interface processing links
 pub mod ui_chains; // UI interface processing chains
+pub mod core_main_links; // Core main processing links
+pub mod core_main_chains; // Core main processing chains
+pub mod core_main_tests; // Core main tests
 
 pub use types::*;
 pub use contexts::*;
@@ -31,6 +34,9 @@ pub use server_links::*;
 pub use server_chains::*;
 pub use ui_links::*;
 pub use ui_chains::*;
+pub use core_main_links::*;
+pub use core_main_chains::*;
+pub use core_main_tests::*;
 
 // Include E2E tests
 #[cfg(test)]
