@@ -9,6 +9,12 @@ pub mod migration; // Migration infrastructure
 pub mod ipc_facade; // IPC facade for API compatibility
 pub mod ipc_links; // IPC processing links
 pub mod ipc_chains; // IPC processing chains
+pub mod client_links; // Client system processing links
+pub mod client_chains; // Client system processing chains
+pub mod server_links; // Server system processing links
+pub mod server_chains; // Server system processing chains
+pub mod ui_links; // UI interface processing links
+pub mod ui_chains; // UI interface processing chains
 
 pub use types::*;
 pub use contexts::*;
@@ -19,6 +25,12 @@ pub use migration::*;
 pub use ipc_facade::*;
 pub use ipc_links::*;
 pub use ipc_chains::*;
+pub use client_links::*;
+pub use client_chains::*;
+pub use server_links::*;
+pub use server_chains::*;
+pub use ui_links::*;
+pub use ui_chains::*;
 
 // Include E2E tests
 #[cfg(test)]
