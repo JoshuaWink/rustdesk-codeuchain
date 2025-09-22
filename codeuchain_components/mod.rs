@@ -1,18 +1,24 @@
-// CodeUChain-based RustDesk Components Library
+// CodeUChain-based modular components for RustDesk
 
 pub mod types;
 pub mod contexts;
 pub mod links;
 pub mod chains;
 pub mod middleware;
-// pub mod message_links; // Temporarily disabled for testing
+pub mod migration; // Migration infrastructure
+pub mod ipc_facade; // IPC facade for API compatibility
+pub mod ipc_links; // IPC processing links
+pub mod ipc_chains; // IPC processing chains
 
 pub use types::*;
 pub use contexts::*;
 pub use links::*;
 pub use chains::*;
 pub use middleware::*;
-// pub use message_links::*;
+pub use migration::*;
+pub use ipc_facade::*;
+pub use ipc_links::*;
+pub use ipc_chains::*;
 
 // Include E2E tests
 #[cfg(test)]

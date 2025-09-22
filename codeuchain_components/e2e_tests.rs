@@ -432,7 +432,7 @@ mod e2e_tests {
                 // Check if error information is present
                 let rustdesk_ctx_value = ctx.get("rustdesk_context");
                 if let Some(rustdesk_json) = rustdesk_ctx_value {
-                    let rustdesk_ctx: Result<types::RustDeskContext, _> = serde_json::from_value(rustdesk_json.clone());
+                    let rustdesk_ctx: std::result::Result<types::RustDeskContext, serde_json::Error> = serde_json::from_value(rustdesk_json.clone());
                     match rustdesk_ctx {
                         Ok(types::RustDeskContext::Error { error, .. }) => {
                             println!("✅ Error properly captured in context: {}", error);

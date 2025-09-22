@@ -90,6 +90,100 @@ pub enum UiUpdate {
     ConnectionStatus(String),
 }
 
+/// Enhanced error types for production use
+#[derive(Debug, Clone)]
+pub enum CodeUChainError {
+    ConnectionError(String),
+    AuthenticationError(String),
+    MediaError(String),
+    SecurityError(String),
+    ConfigurationError(String),
+    TimeoutError(String),
+    ResourceError(String),
+    ValidationError(String),
+    ChainExecutionError(String),
+}
+
+impl std::fmt::Display for CodeUChainError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CodeUChainError::ConnectionError(msg) => write!(f, "Connection error: {}", msg),
+            CodeUChainError::AuthenticationError(msg) => write!(f, "Authentication error: {}", msg),
+            CodeUChainError::MediaError(msg) => write!(f, "Media error: {}", msg),
+            CodeUChainError::SecurityError(msg) => write!(f, "Security error: {}", msg),
+            CodeUChainError::ConfigurationError(msg) => write!(f, "Configuration error: {}", msg),
+            CodeUChainError::TimeoutError(msg) => write!(f, "Timeout error: {}", msg),
+            CodeUChainError::ResourceError(msg) => write!(f, "Resource error: {}", msg),
+            CodeUChainError::ValidationError(msg) => write!(f, "Validation error: {}", msg),
+            CodeUChainError::ChainExecutionError(msg) => write!(f, "Chain execution error: {}", msg),
+        }
+    }
+}
+
+impl std::error::Error for CodeUChainError {}
+
+impl From<&str> for CodeUChainError {
+    fn from(s: &str) -> Self {
+        CodeUChainError::ValidationError(s.to_string())
+    }
+}
+
+impl From<String> for CodeUChainError {
+    fn from(s: String) -> Self {
+        CodeUChainError::ValidationError(s)
+    }
+}
+
+impl From<serde_json::Error> for CodeUChainError {
+    fn from(err: serde_json::Error) -> Self {
+        CodeUChainError::ValidationError(format!("JSON error: {}", err))
+    }
+}
+
+impl From<std::io::Error> for CodeUChainError {
+    fn from(err: std::io::Error) -> Self {
+        CodeUChainError::ResourceError(format!("IO error: {}", err))
+    }
+}
+
+impl From<Box<dyn std::error::Error + Send + Sync>> for CodeUChainError {
+    fn from(err: Box<dyn std::error::Error + Send + Sync>) -> Self {
+        CodeUChainError::ChainExecutionError(err.to_string())
+    }
+}
+
+/// Enhanced result type
+pub type Result<T> = std::result::Result<T, CodeUChainError>;
+
+/// Context metadata for tracking and debugging
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContextMetadata {
+    pub session_id: String,
+    pub request_id: String,
+    pub timestamp: u64,
+    pub user_id: Option<String>,
+    pub client_version: String,
+    pub platform: String,
+    pub security_level: SecurityLevel,
+    pub priority: Priority,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum SecurityLevel {
+    Public,
+    Authenticated,
+    Encrypted,
+    HighSecurity,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Priority {
+    Low,
+    Normal,
+    High,
+    Critical,
+}
+
 /// Main application context that evolves through the processing chain
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum RustDeskContext {
@@ -105,6 +199,10 @@ pub enum RustDeskContext {
     Error {
         session: Option<SessionContext>,
         error: String,
+    },
+    Completed {
+        session: SessionContext,
+        result: serde_json::Value,
     },
 }
 

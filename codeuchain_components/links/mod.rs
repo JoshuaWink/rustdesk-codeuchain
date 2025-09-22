@@ -120,7 +120,7 @@ impl ConnectionLink {
 
 #[async_trait]
 impl LegacyLink for ConnectionLink {
-    async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
             .ok_or("Missing rustdesk_context")?;
@@ -362,7 +362,7 @@ impl VideoLink {
 
 #[async_trait]
 impl LegacyLink for VideoLink {
-    async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
             .ok_or("Missing rustdesk_context")?;
@@ -503,7 +503,7 @@ impl AudioLink {
 
 #[async_trait]
 impl LegacyLink for AudioLink {
-    async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
             .ok_or("Missing rustdesk_context")?;
@@ -637,7 +637,7 @@ impl ClipboardLink {
 
 #[async_trait]
 impl LegacyLink for ClipboardLink {
-    async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
             .ok_or("Missing rustdesk_context")?;
@@ -779,7 +779,7 @@ impl InputLink {
 
 #[async_trait]
 impl LegacyLink for InputLink {
-    async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
             .ok_or("Missing rustdesk_context")?;

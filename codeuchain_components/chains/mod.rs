@@ -75,7 +75,7 @@ impl ClientChain {
     }
 
     /// Process a context through the client chain
-    pub async fn process(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn process(&self, ctx: Context) -> std::result::Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         self.chain.run(ctx).await
     }
 
@@ -158,7 +158,7 @@ impl ServerChain {
     }
 
     /// Process a context through the server chain
-    pub async fn process(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn process(&self, ctx: Context) -> std::result::Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         self.chain.run(ctx).await
     }
 
@@ -240,7 +240,7 @@ impl RemoteDesktopChain {
     }
 
     /// Process a context through the remote desktop chain
-    pub async fn process(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn process(&self, ctx: Context) -> std::result::Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         self.chain.run(ctx).await
     }
 
@@ -274,7 +274,7 @@ pub mod helpers {
 
     /// Create a context for testing
     pub fn create_test_context(peer_id: &str) -> RustDeskChainContext {
-        RustDeskChainContext::new(peer_id.to_string(), ConnType::DEFAULT_CONN)
+        RustDeskChainContext::new(peer_id.to_string(), ConnType::DEFAULT_CONN, None)
     }
 }
 

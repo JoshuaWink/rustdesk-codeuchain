@@ -16,6 +16,9 @@ tokio = { version = "1.0", features = ["full"] }
 rand = "0.8"
 protobuf = "3.2"
 bytes = "1.4"
+lazy_static = "1.4"  # Added for global instances
+parking_lot = "0.12"  # Added for efficient synchronization
+whoami = "1.6.1"  # Added for system information
 
 # Mock hbb_common types for now - in real implementation, would use actual hbb_common
 [dependencies.hbb_common]

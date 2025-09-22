@@ -1270,11 +1270,14 @@ dependencies = [
  "bytes",
  "codeuchain",
  "hbb_common",
+ "lazy_static",
+ "parking_lot",
  "protobuf",
  "rand 0.8.5",
  "serde 1.0.203",
  "serde_json 1.0.118",
  "tokio",
+ "whoami",
 ]
 
 [[package]]
@@ -6503,6 +6506,7 @@ dependencies = [
  "uuid",
  "virtual_display",
  "wallpaper",
+ "whoami",
  "winapi 0.3.9",
  "windows 0.61.1",
  "windows-service",
@@ -8361,6 +8365,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasite"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8dad83b4f25e74f184f64c43b150b91efe7647395b42289f38e50566d82855b"
+
+[[package]]
 name = "wasm-bindgen"
 version = "0.2.100"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8610,6 +8620,17 @@ dependencies = [
  "home",
  "once_cell",
  "rustix 0.38.34",
+]
+
+[[package]]
+name = "whoami"
+version = "1.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d4a4db5077702ca3015d3d02d74974948aba2ad9e12ab7df718ee64ccd7e97d"
+dependencies = [
+ "libredox",
+ "wasite",
+ "web-sys",
 ]
 
 [[package]]
