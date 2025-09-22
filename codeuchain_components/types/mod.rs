@@ -1,6 +1,6 @@
 // CodeUChain-based RustDesk - Core Types and Contexts
 
-use codeuchain::core::{Context, Link};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -153,7 +153,7 @@ impl From<Box<dyn std::error::Error + Send + Sync>> for CodeUChainError {
 }
 
 /// Enhanced result type
-pub type Result<T> = std::result::Result<T, CodeUChainError>;
+pub type CodeUChainResult<T> = std::result::Result<T, CodeUChainError>;
 
 /// Context metadata for tracking and debugging
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -237,7 +237,7 @@ pub trait ContextHelpers {
     fn into_rustdesk_context(self) -> Option<RustDeskContext>;
 }
 
-impl<T> ContextHelpers for Context<T> {
+impl ContextHelpers for Context {
     fn as_rustdesk_context(&self) -> Option<&RustDeskContext> {
         // This would need to be implemented based on how we store the context
         // For now, returning None as placeholder

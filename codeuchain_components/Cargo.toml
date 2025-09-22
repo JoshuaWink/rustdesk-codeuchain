@@ -8,7 +8,7 @@ name = "codeuchain_rustdesk"
 path = "mod.rs"
 
 [dependencies]
-codeuchain = "1.0.1"
+# codeuchain = "1.0.1"  # Removed - implementing core locally
 async-trait = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

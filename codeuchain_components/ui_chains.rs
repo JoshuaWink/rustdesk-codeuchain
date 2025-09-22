@@ -1,8 +1,8 @@
-use codeuchain::core::Chain;
+use crate::core::Chain;
 use crate::ui_links::*;
 use crate::middleware::*;
 use crate::types::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use serde_json;
 
@@ -51,7 +51,7 @@ impl UIOrchestratorLink {
 }
 
 #[async_trait]
-impl LegacyLink for UIOrchestratorLink {
+impl Link for UIOrchestratorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         println!("🎭 Starting UI orchestration flow");
 

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use lazy_static::lazy_static;
-use codeuchain::core::{Context, Chain, Link};
+use crate::core::{Context, Chain, Link};
 use crate::types::*;
 use crate::contexts::*;
 use crate::middleware::*;

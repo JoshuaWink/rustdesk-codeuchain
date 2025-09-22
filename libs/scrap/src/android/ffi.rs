@@ -27,8 +27,8 @@ lazy_static! {
     static ref NDK_CONTEXT_INITED: Mutex<bool> = Default::default();
     static ref MEDIA_CODEC_INFOS: RwLock<Option<MediaCodecInfos>> = RwLock::new(None);
     static ref CLIPBOARD_MANAGER: RwLock<Option<GlobalRef>> = RwLock::new(None);
-    static ref CLIPBOARDS_HOST: Mutex<Option<MultiClipboards>> = Mutex::new(None);
-    static ref CLIPBOARDS_CLIENT: Mutex<Option<MultiClipboards>> = Mutex::new(None);
+    static ref CLIPBOARDS_HOST: std::sync::Mutex<Option<MultiClipboards>> = std::sync::Mutex::new(None);
+    static ref CLIPBOARDS_CLIENT: std::sync::Mutex<Option<MultiClipboards>> = std::sync::Mutex::new(None);
 }
 
 const MAX_VIDEO_FRAME_TIMEOUT: Duration = Duration::from_millis(100);
@@ -113,9 +113,9 @@ pub fn get_audio_raw<'a>(dst: &mut Vec<u8>, last: &mut Vec<u8>) -> Option<()> {
 
 pub fn get_clipboards(client: bool) -> Option<MultiClipboards> {
     if client {
-        CLIPBOARDS_CLIENT.lock().ok()?.take()
+        CLIPBOARDS_CLIENT.lock().ok().and_then(|mut guard| guard.take())
     } else {
-        CLIPBOARDS_HOST.lock().ok()?.take()
+        CLIPBOARDS_HOST.lock().ok().and_then(|mut guard| guard.take())
     }
 }
 

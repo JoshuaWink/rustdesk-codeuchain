@@ -92,6 +92,25 @@ pub enum EventToUI {
     Texture(usize, bool), // (display, gpu_texture)
 }
 
+// Add clipboard types for FFI bridge
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RustClipboardFormat {
+    Text,
+    Image,
+    Unknown,
+}
+
+#[derive(Debug, Clone)]
+pub struct RustClipboard {
+    pub data: Vec<u8>,
+    pub format: RustClipboardFormat,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct RustMultiClipboards {
+    pub clipboards: Vec<RustClipboard>,
+}
+
 pub fn host_stop_system_key_propagate(_stopped: bool) {
     #[cfg(windows)]
     crate::platform::windows::stop_system_key_propagate(_stopped);
@@ -2791,5 +2810,23 @@ pub mod server_side {
         _class: JClass,
     ) -> jboolean {
         jboolean::from(crate::server::is_clipboard_service_ok())
+    }
+}
+
+// Dummy functions to expose clipboard types to flutter_rust_bridge
+pub fn main_get_clipboard_format() -> RustClipboardFormat {
+    RustClipboardFormat::Text
+}
+
+pub fn main_get_clipboard() -> RustClipboard {
+    RustClipboard {
+        data: vec![],
+        format: RustClipboardFormat::Text,
+    }
+}
+
+pub fn main_get_multi_clipboards() -> RustMultiClipboards {
+    RustMultiClipboards {
+        clipboards: vec![],
     }
 }

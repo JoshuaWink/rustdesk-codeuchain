@@ -253,7 +253,7 @@ pub(super) fn get_original_resolution(
     display_name: &str,
     w: usize,
     h: usize,
-) -> MessageField<Resolution> {
+) -> impl hbb_common::protobuf::MessageField<Resolution> {
     #[cfg(windows)]
     let is_rustdesk_virtual_display =
         crate::virtual_display_manager::rustdesk_idd::is_virtual_display(&display_name);

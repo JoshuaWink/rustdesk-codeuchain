@@ -1,6 +1,6 @@
 use crate::types::*;
 use crate::core_main_links::*;
-use codeuchain::{Chain, Context, LegacyLink, Middleware};
+use crate::core::{Chain, Context, Link, Middleware};
 use async_trait::async_trait;
 use serde_json;
 
@@ -78,7 +78,7 @@ impl ApplicationOrchestratorLink {
 }
 
 #[async_trait]
-impl LegacyLink for ApplicationOrchestratorLink {
+impl Link for ApplicationOrchestratorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         self.process_application_flow(ctx).await
     }

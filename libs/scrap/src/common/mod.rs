@@ -386,7 +386,7 @@ macro_rules! generate_call_macro {
                         column!()
                     );
                     if $allow_err {
-                        log::warn!("Failed to call {}, {}", stringify!($func_name), message);
+                        ::log::warn!("Failed to call {}, {}", stringify!($func_name), message);
                     } else {
                         return Err(crate::Error::FailedCall(message).into());
                     }

@@ -1,5 +1,6 @@
 // CodeUChain-based modular components for RustDesk
 
+pub mod core; // Core CodeUChain abstractions
 pub mod types;
 pub mod contexts;
 pub mod links;
@@ -18,6 +19,10 @@ pub mod ui_chains; // UI interface processing chains
 pub mod core_main_links; // Core main processing links
 pub mod core_main_chains; // Core main processing chains
 pub mod core_main_tests; // Core main tests
+pub mod system_orchestrator; // System-wide orchestration
+pub mod system_integration_tests; // System integration tests
+pub mod e2e_integration_tests; // End-to-end integration tests
+pub mod performance_tests; // Performance regression tests
 
 pub use types::*;
 pub use contexts::*;
@@ -37,10 +42,12 @@ pub use ui_chains::*;
 pub use core_main_links::*;
 pub use core_main_chains::*;
 pub use core_main_tests::*;
+pub use system_orchestrator::*;
+pub use system_integration_tests::*;
+pub use e2e_integration_tests::*;
+pub use performance_tests::*;
 
-// Include E2E tests
-#[cfg(test)]
-mod e2e_tests;
+pub use core::*;
 
 #[cfg(test)]
 mod tests {

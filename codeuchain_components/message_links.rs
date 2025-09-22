@@ -3,7 +3,7 @@
 
 use crate::types::*;
 use crate::contexts::*;
-use codeuchain::{Context, LegacyLink};
+use codeuchain::{Context, Link};
 use async_trait::async_trait;
 use std::result::Result as StdResult;
 use std::sync::Arc;
@@ -49,7 +49,7 @@ impl VideoMessageLink {
 }
 
 #[async_trait]
-impl LegacyLink for VideoMessageLink {
+impl Link for VideoMessageLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 
@@ -136,7 +136,7 @@ impl AudioMessageLink {
 }
 
 #[async_trait]
-impl LegacyLink for AudioMessageLink {
+impl Link for AudioMessageLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 
@@ -218,7 +218,7 @@ impl ClipboardMessageLink {
 }
 
 #[async_trait]
-impl LegacyLink for ClipboardMessageLink {
+impl Link for ClipboardMessageLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 
@@ -309,7 +309,7 @@ impl InputMessageLink {
 }
 
 #[async_trait]
-impl LegacyLink for InputMessageLink {
+impl Link for InputMessageLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 
@@ -407,7 +407,7 @@ impl FileTransferMessageLink {
 }
 
 #[async_trait]
-impl LegacyLink for FileTransferMessageLink {
+impl Link for FileTransferMessageLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 
@@ -452,11 +452,11 @@ impl FileTransferMessageLink {
 
 /// Message Router Link - Routes incoming messages to appropriate processing links
 pub struct MessageRouterLink {
-    pub video_link: Option<Arc<dyn LegacyLink + Send + Sync>>,
-    pub audio_link: Option<Arc<dyn LegacyLink + Send + Sync>>,
-    pub clipboard_link: Option<Arc<dyn LegacyLink + Send + Sync>>,
-    pub input_link: Option<Arc<dyn LegacyLink + Send + Sync>>,
-    pub file_transfer_link: Option<Arc<dyn LegacyLink + Send + Sync>>,
+    pub video_link: Option<Arc<dyn Link + Send + Sync>>,
+    pub audio_link: Option<Arc<dyn Link + Send + Sync>>,
+    pub clipboard_link: Option<Arc<dyn Link + Send + Sync>>,
+    pub input_link: Option<Arc<dyn Link + Send + Sync>>,
+    pub file_transfer_link: Option<Arc<dyn Link + Send + Sync>>,
 }
 
 impl MessageRouterLink {
@@ -470,34 +470,34 @@ impl MessageRouterLink {
         }
     }
 
-    pub fn with_video_link(mut self, link: Arc<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_video_link(mut self, link: Arc<dyn Link + Send + Sync>) -> Self {
         self.video_link = Some(link);
         self
     }
 
-    pub fn with_audio_link(mut self, link: Arc<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_audio_link(mut self, link: Arc<dyn Link + Send + Sync>) -> Self {
         self.audio_link = Some(link);
         self
     }
 
-    pub fn with_clipboard_link(mut self, link: Arc<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_clipboard_link(mut self, link: Arc<dyn Link + Send + Sync>) -> Self {
         self.clipboard_link = Some(link);
         self
     }
 
-    pub fn with_input_link(mut self, link: Arc<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_input_link(mut self, link: Arc<dyn Link + Send + Sync>) -> Self {
         self.input_link = Some(link);
         self
     }
 
-    pub fn with_file_transfer_link(mut self, link: Arc<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_file_transfer_link(mut self, link: Arc<dyn Link + Send + Sync>) -> Self {
         self.file_transfer_link = Some(link);
         self
     }
 }
 
 #[async_trait]
-impl LegacyLink for MessageRouterLink {
+impl Link for MessageRouterLink {
     async fn call(&self, ctx: Context) -> MessageResult<Context> {
         let data = ctx.data().clone();
 

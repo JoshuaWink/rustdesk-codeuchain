@@ -1,9 +1,9 @@
-use codeuchain::core::Chain;
+use crate::core::Chain;
 use crate::client_links::*;
 use crate::middleware::*;
 use crate::types::*;
 use crate::contexts::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use std::sync::Arc;
 
@@ -29,7 +29,7 @@ impl ClientOrchestratorLink {
 }
 
 #[async_trait]
-impl LegacyLink for ClientOrchestratorLink {
+impl Link for ClientOrchestratorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         println!("🎯 Starting client orchestration");
 

@@ -1,6 +1,6 @@
 // Comprehensive example of CodeUChain-based RustDesk end-to-end processing
 
-use codeuchain::{Context, LegacyLink};
+use codeuchain::{Context, Link};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -92,7 +92,7 @@ pub struct InputEvent {
 pub struct ConnectionLink;
 
 #[async_trait]
-impl LegacyLink for ConnectionLink {
+impl Link for ConnectionLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -131,7 +131,7 @@ impl LegacyLink for ConnectionLink {
 pub struct VideoLink;
 
 #[async_trait]
-impl LegacyLink for VideoLink {
+impl Link for VideoLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -197,7 +197,7 @@ impl LegacyLink for VideoLink {
 pub struct AudioLink;
 
 #[async_trait]
-impl LegacyLink for AudioLink {
+impl Link for AudioLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -237,7 +237,7 @@ impl LegacyLink for AudioLink {
 pub struct ClipboardLink;
 
 #[async_trait]
-impl LegacyLink for ClipboardLink {
+impl Link for ClipboardLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -276,7 +276,7 @@ impl LegacyLink for ClipboardLink {
 pub struct InputLink;
 
 #[async_trait]
-impl LegacyLink for InputLink {
+impl Link for InputLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")

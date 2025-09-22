@@ -1,6 +1,6 @@
 use crate::types::*;
 use crate::contexts::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use std::result::Result as StdResult;
 use std::sync::Arc;
@@ -20,7 +20,7 @@ impl ConfigValidatorLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConfigValidatorLink {
+impl Link for ConfigValidatorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -69,7 +69,7 @@ impl ConfigProcessorLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConfigProcessorLink {
+impl Link for ConfigProcessorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -154,7 +154,7 @@ impl MessageValidatorLink {
 }
 
 #[async_trait]
-impl LegacyLink for MessageValidatorLink {
+impl Link for MessageValidatorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -218,7 +218,7 @@ impl MessageProcessorLink {
 }
 
 #[async_trait]
-impl LegacyLink for MessageProcessorLink {
+impl Link for MessageProcessorLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -286,7 +286,7 @@ impl SystemInfoLink {
 }
 
 #[async_trait]
-impl LegacyLink for SystemInfoLink {
+impl Link for SystemInfoLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -320,11 +320,11 @@ impl LegacyLink for SystemInfoLink {
 
 /// IPC Router Link - Routes IPC requests based on action type
 pub struct IPCRouterLink {
-    pub config_validator: Option<Box<dyn LegacyLink + Send + Sync>>,
-    pub config_processor: Option<Box<dyn LegacyLink + Send + Sync>>,
-    pub message_validator: Option<Box<dyn LegacyLink + Send + Sync>>,
-    pub message_processor: Option<Box<dyn LegacyLink + Send + Sync>>,
-    pub system_info: Option<Box<dyn LegacyLink + Send + Sync>>,
+    pub config_validator: Option<Box<dyn Link + Send + Sync>>,
+    pub config_processor: Option<Box<dyn Link + Send + Sync>>,
+    pub message_validator: Option<Box<dyn Link + Send + Sync>>,
+    pub message_processor: Option<Box<dyn Link + Send + Sync>>,
+    pub system_info: Option<Box<dyn Link + Send + Sync>>,
 }
 
 impl IPCRouterLink {
@@ -338,34 +338,34 @@ impl IPCRouterLink {
         }
     }
 
-    pub fn with_config_validator(mut self, link: Box<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_config_validator(mut self, link: Box<dyn Link + Send + Sync>) -> Self {
         self.config_validator = Some(link);
         self
     }
 
-    pub fn with_config_processor(mut self, link: Box<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_config_processor(mut self, link: Box<dyn Link + Send + Sync>) -> Self {
         self.config_processor = Some(link);
         self
     }
 
-    pub fn with_message_validator(mut self, link: Box<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_message_validator(mut self, link: Box<dyn Link + Send + Sync>) -> Self {
         self.message_validator = Some(link);
         self
     }
 
-    pub fn with_message_processor(mut self, link: Box<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_message_processor(mut self, link: Box<dyn Link + Send + Sync>) -> Self {
         self.message_processor = Some(link);
         self
     }
 
-    pub fn with_system_info(mut self, link: Box<dyn LegacyLink + Send + Sync>) -> Self {
+    pub fn with_system_info(mut self, link: Box<dyn Link + Send + Sync>) -> Self {
         self.system_info = Some(link);
         self
     }
 }
 
 #[async_trait]
-impl LegacyLink for IPCRouterLink {
+impl Link for IPCRouterLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 

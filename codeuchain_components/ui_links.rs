@@ -1,5 +1,5 @@
 use crate::types::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use serde_json;
 
@@ -16,7 +16,7 @@ impl EventRoutingLink {
 }
 
 #[async_trait]
-impl LegacyLink for EventRoutingLink {
+impl Link for EventRoutingLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -52,7 +52,7 @@ impl SessionManagementLink {
 }
 
 #[async_trait]
-impl LegacyLink for SessionManagementLink {
+impl Link for SessionManagementLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -93,7 +93,7 @@ impl StateSynchronizationLink {
 }
 
 #[async_trait]
-impl LegacyLink for StateSynchronizationLink {
+impl Link for StateSynchronizationLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -133,7 +133,7 @@ impl UserInteractionLink {
 }
 
 #[async_trait]
-impl LegacyLink for UserInteractionLink {
+impl Link for UserInteractionLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 

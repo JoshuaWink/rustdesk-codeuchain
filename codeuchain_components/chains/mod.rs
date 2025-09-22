@@ -3,7 +3,7 @@
 use crate::types::*;
 use crate::contexts::*;
 use crate::links::*;
-use codeuchain::{Chain, Context, LegacyLink};
+use crate::core::{Chain, Context, Link};
 use std::sync::Arc;
 
 /// Client-side processing chain
@@ -80,7 +80,7 @@ impl ClientChain {
     }
 
     /// Add middleware to the chain
-    pub fn with_middleware<M: codeuchain::Middleware + 'static>(
+    pub fn with_middleware<M: crate::core::Middleware + 'static>(
         mut self,
         middleware: M,
     ) -> Self {
@@ -163,7 +163,7 @@ impl ServerChain {
     }
 
     /// Add middleware to the chain
-    pub fn add_middleware<M: codeuchain::Middleware + 'static>(
+    pub fn add_middleware<M: crate::core::Middleware + 'static>(
         &mut self,
         middleware: M,
     ) {
@@ -245,7 +245,7 @@ impl RemoteDesktopChain {
     }
 
     /// Add middleware to the chain
-    pub fn add_middleware<M: codeuchain::Middleware + 'static>(
+    pub fn add_middleware<M: crate::core::Middleware + 'static>(
         &mut self,
         middleware: M,
     ) {

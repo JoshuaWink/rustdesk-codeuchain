@@ -1249,26 +1249,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "codeuchain"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a10855b50fe76e953f5859588294e1e61af25e73658d06fac6c666411cc290a3"
-dependencies = [
- "anyhow",
- "async-trait",
- "serde 1.0.203",
- "serde_json 1.0.118",
- "thiserror 1.0.61",
- "tokio",
-]
-
-[[package]]
 name = "codeuchain-rustdesk"
 version = "0.1.0"
 dependencies = [
  "async-trait",
  "bytes",
- "codeuchain",
  "hbb_common",
  "lazy_static",
  "parking_lot",
@@ -3229,6 +3214,7 @@ dependencies = [
  "anyhow",
  "bytes",
  "chrono",
+ "futures",
  "lazy_static",
  "libc",
  "log",
@@ -3240,6 +3226,7 @@ dependencies = [
  "serde 1.0.203",
  "sysinfo",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -6407,6 +6394,7 @@ version = "1.4.2"
 dependencies = [
  "android-wakelock",
  "android_logger",
+ "anyhow",
  "arboard",
  "async-process",
  "async-trait",
@@ -6420,7 +6408,6 @@ dependencies = [
  "clipboard",
  "clipboard-master",
  "cocoa 0.24.1",
- "codeuchain",
  "codeuchain-rustdesk",
  "core-foundation 0.9.4",
  "core-graphics 0.22.3",
@@ -6465,6 +6452,7 @@ dependencies = [
  "os-version",
  "pam",
  "parity-tokio-ipc",
+ "parking_lot",
  "percent-encoding",
  "piet",
  "piet-coregraphics",
@@ -6498,6 +6486,7 @@ dependencies = [
  "terminfo",
  "termios 0.3.3",
  "tiny-skia",
+ "tokio",
  "totp-rs",
  "tray-icon",
  "ttf-parser",

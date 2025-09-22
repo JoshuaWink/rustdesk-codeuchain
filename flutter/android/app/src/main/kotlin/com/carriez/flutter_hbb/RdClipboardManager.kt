@@ -10,9 +10,10 @@ import android.content.ClipboardManager
 import android.util.Log
 import androidx.annotation.Keep
 
-import hbb.ClipboardFormat
-import hbb.Clipboard
-import hbb.MultiClipboards
+import hbb.MessageOuterClass.ClipboardFormat
+import hbb.MessageOuterClass.Clipboard
+import hbb.MessageOuterClass.MultiClipboards
+import hbb.MessageOuterClass.ClipboardItem
 
 import ffi.FFI
 
@@ -72,12 +73,18 @@ class RdClipboardManager(private val clipboardManager: ClipboardManager) {
             val clips = MultiClipboards.newBuilder()
             if (text != null) {
                 val content = com.google.protobuf.ByteString.copyFromUtf8(text.toString())
-                    clips.addClipboards(Clipboard.newBuilder().setFormat(ClipboardFormat.Text).setContent(content).build())
-                    count++
-                }
+                val clipBuilder = ClipboardItem.newBuilder()
+                clipBuilder.setFormat(ClipboardFormat.Text)
+                clipBuilder.setContent(content)
+                clips.addClipboards(clipBuilder.build())
+                count++
+            }
             if (html != null) {
                 val content = com.google.protobuf.ByteString.copyFromUtf8(html)
-                clips.addClipboards(Clipboard.newBuilder().setFormat(ClipboardFormat.Html).setContent(content).build())
+                val clipBuilder = ClipboardItem.newBuilder()
+                clipBuilder.setFormat(ClipboardFormat.Html)
+                clipBuilder.setContent(content)
+                clips.addClipboards(clipBuilder.build())
                 count++
             }
             if (count > 0) {

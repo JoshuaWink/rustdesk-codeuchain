@@ -1,7 +1,7 @@
 // Middleware implementations for CodeUChain-based RustDesk
 
 use crate::types::*;
-use codeuchain::{Context, Middleware};
+use crate::core::{Context, Middleware};
 use async_trait::async_trait;
 use std::time::{Duration, Instant};
 use std::collections::HashMap;
@@ -27,7 +27,7 @@ impl LoggingMiddleware {
 
 #[async_trait]
 impl Middleware for LoggingMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown"; // We don't have access to link names in this trait
         if self.log_level == "debug" {
             println!("[DEBUG] Starting link: {} with context keys: {:?}", link_name, ctx.data().keys().collect::<Vec<_>>());
@@ -37,7 +37,7 @@ impl Middleware for LoggingMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         if self.log_level == "debug" {
             println!("[DEBUG] Completed link: {} with context keys: {:?}", link_name, ctx.data().keys().collect::<Vec<_>>());
@@ -47,7 +47,7 @@ impl Middleware for LoggingMiddleware {
         Ok(())
     }
 
-    async fn on_error(&self, _link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, _ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         eprintln!("[ERROR] Link '{}' failed: {}", link_name, err);
         if self.log_level == "debug" {
@@ -102,7 +102,7 @@ impl PerformanceMiddleware {
 
 #[async_trait]
 impl Middleware for PerformanceMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Store start time in task local storage or similar
         // For simplicity, we'll use a simple approach
         let start_time = Instant::now();
@@ -111,7 +111,7 @@ impl Middleware for PerformanceMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Calculate and store duration
         let duration = Duration::from_millis(10); // Mock duration
         let link_name = "unknown";
@@ -122,7 +122,7 @@ impl Middleware for PerformanceMiddleware {
         Ok(())
     }
 
-    async fn on_error(&self, _link: Option<&dyn codeuchain::LegacyLink>, _err: &Box<dyn std::error::Error + Send + Sync>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, _ctx: &Context, _err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         println!("[PERF] unknown failed");
         Ok(())
     }
@@ -155,7 +155,7 @@ impl ErrorHandlingMiddleware {
 
 #[async_trait]
 impl Middleware for ErrorHandlingMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Check if context contains error information
         if let Some(rustdesk_ctx_json) = ctx.data().get("rustdesk_context") {
             if let Ok(rustdesk_ctx) = serde_json::from_value::<RustDeskContext>(rustdesk_ctx_json.clone()) {
@@ -167,7 +167,7 @@ impl Middleware for ErrorHandlingMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Check for errors after processing
         if let Some(rustdesk_ctx_json) = ctx.data().get("rustdesk_context") {
             if let Ok(rustdesk_ctx) = serde_json::from_value::<RustDeskContext>(rustdesk_ctx_json.clone()) {
@@ -179,7 +179,7 @@ impl Middleware for ErrorHandlingMiddleware {
         Ok(())
     }
 
-    async fn on_error(&self, _link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, _ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         println!("[ERROR] Link 'unknown' failed: {}. Attempting recovery...", err);
 
         // Implement retry logic here
@@ -223,7 +223,7 @@ impl SecurityMiddleware {
 
 #[async_trait]
 impl Middleware for SecurityMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Validate security requirements
         if let Some(rustdesk_ctx_json) = ctx.data().get("rustdesk_context") {
             if let Ok(rustdesk_ctx) = serde_json::from_value::<RustDeskContext>(rustdesk_ctx_json.clone()) {
@@ -251,7 +251,7 @@ impl Middleware for SecurityMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Post-processing security checks
         if self.encryption_enabled {
             if let Some(rustdesk_ctx_json) = ctx.data().get("rustdesk_context") {
@@ -267,7 +267,7 @@ impl Middleware for SecurityMiddleware {
         Ok(())
     }
 
-    async fn on_error(&self, link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, _ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, _ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Security-related error handling
         if err.to_string().contains("security") || err.to_string().contains("encryption") {
             println!("[SECURITY] Security error in unknown: {}", err);
@@ -362,7 +362,7 @@ impl CircuitBreakerMiddleware {
 
 #[async_trait]
 impl Middleware for CircuitBreakerMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown"; // Would need link name access
 
         if !self.should_attempt(link_name) {
@@ -372,13 +372,13 @@ impl Middleware for CircuitBreakerMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         self.record_success(link_name);
         Ok(())
     }
 
-    async fn on_error(&self, link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         self.record_failure(link_name);
         println!("[CIRCUIT] Recorded failure for {}: {}", link_name, err);
@@ -432,7 +432,7 @@ impl RateLimitMiddleware {
 
 #[async_trait]
 impl Middleware for RateLimitMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let key = "global"; // Could be based on user/session
 
         if !self.is_allowed(key) {
@@ -442,11 +442,11 @@ impl Middleware for RateLimitMiddleware {
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         Ok(())
     }
 
-    async fn on_error(&self, link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         Ok(())
     }
 }
@@ -505,19 +505,19 @@ impl MetricsMiddleware {
 
 #[async_trait]
 impl Middleware for MetricsMiddleware {
-    async fn before(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn before(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Store start time in context or use task-local storage
         Ok(())
     }
 
-    async fn after(&self, link: Option<&dyn codeuchain::LegacyLink>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn after(&self, name: &str, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         let duration_ms = 10; // Would calculate actual duration
         self.record_request(link_name, duration_ms, false);
         Ok(())
     }
 
-    async fn on_error(&self, link: Option<&dyn codeuchain::LegacyLink>, err: &Box<dyn std::error::Error + Send + Sync>, ctx: &Context) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn on_error(&self, name: &str, ctx: &Context, err: &Box<dyn std::error::Error + Send + Sync>) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let link_name = "unknown";
         let duration_ms = 10; // Would calculate actual duration
         self.record_request(link_name, duration_ms, true);

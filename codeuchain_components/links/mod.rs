@@ -2,7 +2,7 @@
 
 use crate::types::*;
 use crate::contexts::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use std::result::Result as StdResult;
 use std::net::SocketAddr;
@@ -119,7 +119,7 @@ impl ConnectionLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConnectionLink {
+impl Link for ConnectionLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -361,7 +361,7 @@ impl VideoLink {
 }
 
 #[async_trait]
-impl LegacyLink for VideoLink {
+impl Link for VideoLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -502,7 +502,7 @@ impl AudioLink {
 }
 
 #[async_trait]
-impl LegacyLink for AudioLink {
+impl Link for AudioLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -636,7 +636,7 @@ impl ClipboardLink {
 }
 
 #[async_trait]
-impl LegacyLink for ClipboardLink {
+impl Link for ClipboardLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")
@@ -778,7 +778,7 @@ impl InputLink {
 }
 
 #[async_trait]
-impl LegacyLink for InputLink {
+impl Link for InputLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
         let rustdesk_ctx_json = data.get("rustdesk_context")

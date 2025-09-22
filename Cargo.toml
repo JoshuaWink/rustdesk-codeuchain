@@ -20,10 +20,6 @@ path = "src/naming.rs"
 name = "service"
 path = "src/service.rs"
 
-[[bin]]
-name = "codeuchain_example"
-path = "codeuchain_components/examples/integration_example.rs"
-
 [features]
 inline = []
 cli = []
@@ -31,6 +27,7 @@ use_samplerate = ["samplerate"]
 use_rubato = ["rubato"]
 use_dasp = ["dasp"]
 flutter = ["flutter_rust_bridge"]
+codeuchain_integration = ["dep:codeuchain-rustdesk"]
 default = ["use_dasp"]
 hwcodec = ["scrap/hwcodec"]
 vram = ["scrap/vram"]
@@ -45,16 +42,18 @@ unix-file-copy-paste = [
     "clipboard/unix-file-copy-paste",
 ]
 screencapturekit = ["cpal/screencapturekit"]
-codeuchain_integration = ["dep:codeuchain-rustdesk"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 async-trait = "0.1"
-codeuchain = "1.0.1"
-codeuchain-rustdesk = { path = "codeuchain_components", optional = true }
 scrap = { path = "libs/scrap", features = ["wayland"] }
 hbb_common = { path = "libs/hbb_common" }
+codeuchain-rustdesk = { path = "codeuchain_components", optional = true }
+# codeuchain = { version = "1.0.1", optional = true }
+parking_lot = "0.12"
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
 serde_derive = "1.0"
 serde = "1.0"
 serde_json = "1.0"

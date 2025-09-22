@@ -1,6 +1,6 @@
 use crate::core_main_chains::*;
 use crate::core_main_links::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 

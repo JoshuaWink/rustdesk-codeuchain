@@ -28,13 +28,14 @@ use hbb_common::config::option2bool;
 use hbb_common::{
     anyhow::anyhow,
     bail,
-    config::{Config, PeerConfig},
+    config::{Config, option2bool},
     lazy_static, log,
     message_proto::message::{
         supported_decoding::PreferCodec, video_frame, Chroma, CodecAbility, EncodedVideoFrames,
         SupportedDecoding, SupportedEncoding, VideoFrame,
     },
     sysinfo::{LoadAverageExt, System},
+    PeerConfig,
     ResultType,
 };
 
@@ -821,7 +822,7 @@ impl Decoder {
         if id.is_empty() {
             return (PreferCodec::Auto, Chroma::I420);
         }
-        let options = PeerConfig::load(id).map(|c| c.options).unwrap_or_default();
+        let options = PeerConfig::load(id).unwrap_or_default();
         let codec = options
             .get("codec-preference")
             .map_or("".to_owned(), |c| c.to_owned());

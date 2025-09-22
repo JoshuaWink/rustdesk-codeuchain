@@ -1,6 +1,6 @@
 use crate::types::*;
 use crate::contexts::*;
-use codeuchain::{Context, LegacyLink};
+use crate::core::{Context, Link};
 use async_trait::async_trait;
 use std::result::Result as StdResult;
 
@@ -18,7 +18,7 @@ impl ConnectionEstablishmentLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConnectionEstablishmentLink {
+impl Link for ConnectionEstablishmentLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -67,7 +67,7 @@ impl MediaStreamingLink {
 }
 
 #[async_trait]
-impl LegacyLink for MediaStreamingLink {
+impl Link for MediaStreamingLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -108,7 +108,7 @@ impl InputProcessingLink {
 }
 
 #[async_trait]
-impl LegacyLink for InputProcessingLink {
+impl Link for InputProcessingLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -150,7 +150,7 @@ impl FileTransferLink {
 }
 
 #[async_trait]
-impl LegacyLink for FileTransferLink {
+impl Link for FileTransferLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 
@@ -182,7 +182,7 @@ impl QualityControlLink {
 }
 
 #[async_trait]
-impl LegacyLink for QualityControlLink {
+impl Link for QualityControlLink {
     async fn call(&self, ctx: Context) -> LinkResult<Context> {
         let data = ctx.data().clone();
 

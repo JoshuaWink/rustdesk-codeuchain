@@ -5,7 +5,7 @@ use crate::types::*;
 use crate::contexts::*;
 use crate::message_links::*;
 use crate::middleware::*;
-use codeuchain::{Chain, Context, LegacyLink};
+use codeuchain::{Chain, Context, Link};
 use async_trait::async_trait;
 use std::sync::Arc;
 use tokio::sync::mpsc;
@@ -253,7 +253,7 @@ impl ConnectionMonitoringLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConnectionMonitoringLink {
+impl Link for ConnectionMonitoringLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
 
@@ -311,7 +311,7 @@ impl ConnectionCleanupLink {
 }
 
 #[async_trait]
-impl LegacyLink for ConnectionCleanupLink {
+impl Link for ConnectionCleanupLink {
     async fn call(&self, ctx: Context) -> Result<Context, Box<dyn std::error::Error + Send + Sync>> {
         let data = ctx.data().clone();
 

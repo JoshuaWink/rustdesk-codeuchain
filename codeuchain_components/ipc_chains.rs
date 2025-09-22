@@ -1,4 +1,4 @@
-use codeuchain::core::Chain;
+use crate::core::Chain;
 use crate::ipc_links::*;
 use crate::middleware::*;
 use std::sync::Arc;
